@@ -17,3 +17,28 @@ class User(db.Model):
             "email": self.email,
             # do not serialize the password, its a security breach
         }
+
+
+class People(db.Model):
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    name = db.Column(db.String(255))
+    birth_year = db.Column(db.String(255))
+    eye_color = db.Column(db.String(255))
+    gender = db.Column(db.String(255))
+    hair_color = db.Column(db.String(255))
+    height = db.Column(db.Integer)
+    mass = db.Column(db.Integer)
+    skin_color = db.Column(db.String(255))
+
+    def serialize(self):
+        return {
+            "name": self.name,
+            "birth_year": self.birth_year,
+            "eye_color": self.eye_color,
+            "gender": self.gender,
+            "hair_color": self.hair_color,
+            "height": self.height,
+            "mass": self.mass,
+            "skin_color": self.skin_color,
+        }
+

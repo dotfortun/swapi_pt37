@@ -5,6 +5,10 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, People
 from api.utils import generate_sitemap, APIException
 
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+
 from datetime import datetime
 
 api = Blueprint('api', __name__)
@@ -40,3 +44,35 @@ def get_person(id):
         return jsonify(
             data=person.serialize()
         ), 200
+
+
+@api.route('/protected', methods=['GET'])
+@jwt_required()
+def super_secret():
+    return jsonify(
+        id=get_jwt_identity(),
+        secret_message="Hello world!"
+    )
+
+
+@api.route('/login', methods=['POST'])
+def login():
+    body = request.json
+    """
+    {
+        "email": "some user identifier",
+        "pass": "some password"
+    }
+    """
+    user = User.query.filter_by(
+        email=body.get("email", "").lower()
+    ).first()
+
+    if user:
+        if body.get("pass", None) == user.password:
+            return jsonify(
+                token=create_access_token(
+                    identity=user.email
+                )
+            ), 200
+    return jsonify(msg="Incorrect credentials"), 400

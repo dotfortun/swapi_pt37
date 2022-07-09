@@ -57,19 +57,21 @@ def super_secret():
 
 @api.route('/login', methods=['POST'])
 def login():
-    body = request.json
     """
+    request schema:
     {
         "email": "some user identifier",
         "pass": "some password"
     }
     """
+    body = request.json
+    
     user = User.query.filter_by(
         email=body.get("email", "").lower()
     ).first()
 
     if user:
-        if body.get("pass", None) == user.password:
+        if user.check_password_hash(body.get("pass", "")):
             return jsonify(
                 token=create_access_token(
                     identity=user.email

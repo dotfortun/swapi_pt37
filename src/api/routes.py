@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, People
+from api.models import db, Users, People
 from api.utils import generate_sitemap, APIException
 
 from flask_jwt_extended import create_access_token
@@ -66,7 +66,7 @@ def login():
     """
     body = request.json
     
-    user = User.query.filter_by(
+    user = Users.query.filter_by(
         email=body.get("email", "").lower()
     ).first()
 

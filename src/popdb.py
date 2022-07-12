@@ -1,5 +1,5 @@
 from app import app
-from api.models import User, db
+from api.models import Users, db
 import json
 
 from tqdm import tqdm
@@ -12,7 +12,7 @@ with open('./src/users.json', 'rt') as user_file:
 with app.app_context():
     for user in tqdm(users):
         db.session.add(
-            User(
+            Users(
                 email=user["email"],
                 password=user["login"]["password"]
             )
